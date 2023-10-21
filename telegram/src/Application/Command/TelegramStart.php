@@ -4,27 +4,34 @@ declare(strict_types=1);
 
 namespace App\Application\Command;
 
+use App\Domain\Entity\Message\Chat;
+use App\Domain\Entity\Message\Test;
+use App\Domain\Entity\Message\Update;
 use Exception;
-use Handler;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use TelegramBot\Entities\Keyboard;
-use TelegramBot\Entities\KeyboardButton;
-use TelegramBot\Entities\Update;
-use TelegramBot\Telegram;
-use TelegramBot\UpdateHandler;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
+use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 #[AsCommand(name: 'telegram:start')]
 final class TelegramStart extends Command
 {
 
+    private DenormalizerInterface $serializer;
 
+    public function __construct(DenormalizerInterface $serializer)
+    {
+        parent::__construct();
+        $this->serializer = $serializer;
+    }
 
     protected function configure(): void
     {
-        $this->setDescription('start telegram');
+        $this->setDescription('test telegram');
     }
 
     /**
@@ -39,7 +46,9 @@ final class TelegramStart extends Command
 
 
             $admin_id = 1374675059;
-            $bot_token = '6409552485:AAF1sTyMBiIi47qZFn3Xm826zlAUGo1iTf8';
+            $bot_token = '6753324315:AAE6KrNTe_0ONQj2Gf-Wve_7XCG9dQOCFUo';
+
+
             \TelegramBot\Telegram::setToken($bot_token);
 
 
@@ -48,11 +57,50 @@ final class TelegramStart extends Command
 
 
 
-            $result = \TelegramBot\Request::getUpdates([]);
+//            $result = \TelegramBot\Request::getUpdates([]);
 
-            $data = $result->getRawData()['result'];
-            $message = $data[array_key_last($data)];
+//            \TelegramBot\Request::setWebhook([
+//                'url' => 'https://webhook.site/64f12eed-6fc2-4080-8bd6-20ffdc48ecd8/' . $bot_token
+////                'url' => ''
+//            ]);
 
+//            \TelegramBot\Request::deleteWebhook(['url' => 'https://webhook.site/64f12eed-6fc2-4080-8bd6-20ffdc48ecd8/' . $bot_token]);
+
+            $inlineKeyboard = [
+                [
+                    ['text' => 'Кнопка 1', 'callback_data' => '88'],
+                    ['text' => 'Кнопка 2', 'callback_data' => '22']
+                ]
+            ];
+
+            $response = \TelegramBot\Request::sendMessage([
+                'chat_id' => 1374675059,
+                'text' => 'Выберите одну из кнопок:',
+                'reply_markup' => json_encode([
+                    'inline_keyboard' => $inlineKeyboard
+                ])
+            ]);
+
+
+            dd($response);
+
+
+            $data = $result->getRawData();
+            dd($data);
+
+            $dataResult = $data['result'];
+            $message = $dataResult[array_key_last($dataResult)];
+
+
+//            dd($message);
+            try {
+                $denormalize = $this->serializer->denormalize($message, Update::class);
+            } catch (\Exception $e) {
+                echo $e->getMessage();
+            } catch (ExceptionInterface $e) {
+                echo $e->getMessage();
+            }
+//            dd($denormalize->getMessage()->getText());
 
 
 
@@ -70,7 +118,7 @@ final class TelegramStart extends Command
                 $result = \TelegramBot\Request::sendMessage([
                     'chat_id' => $message['message']['chat']['id'],
                     'text' => 'Выберите одну из кнопок:',
-                    'reply_markup' => json_encode($keyboard)
+//                    'reply_markup' => json_encode($keyboard)
                 ]);
             } else {
                 $keyboard = [
@@ -87,15 +135,19 @@ final class TelegramStart extends Command
                     'caption' => 'Описание вашего фото (необязательно)'
                 ]);
 
-                // отправка сообщения с кнопками
-                $result = \TelegramBot\Request::sendMessage([
-                    'chat_id' => $message['message']['chat']['id'],
-                    'text' => 'Выберите одну из кнопок:',
-                    'reply_markup' => json_encode($keyboard)
-                ]);
+//                // отправка сообщения с кнопками с наружи
+//                $result = \TelegramBot\Request::sendMessage([
+//                    'chat_id' => $message['message']['chat']['id'],
+//                    'text' => 'Выберите одну из кнопок:',
+//                    'reply_markup' => json_encode($keyboard)
+//                ]);
+
+
+
+
+
             }
 
-            dd($message['message']);
             return Command::SUCCESS;
         } catch (Exception $e) {
             $output->writeln($e->getMessage());
