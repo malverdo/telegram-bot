@@ -23,9 +23,26 @@ services:
     App\Application\Command\TelegramStart: ~
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-    Symfony\Component\Serializer\Normalizer\ArrayDenormalizer:
-        tags:
-            - { name: 'serializer.normalizer'}
+#    Symfony\Component\Serializer\Normalizer\ArrayDenormalizer:
+#        tags:
+#            - { name: 'serializer.normalizer'}
 
     App\Application\Service\:
         resource: '../src/Application/Service'
+
+    App\Infrastructure\Client\TelegramBotClient:
+        arguments:
+            $adminId: '%env(ADMIN_ID)%'
+            $botToken: '%env(BOT_TOKEN)%'
+            $webhook: '%env(WEB_HOOK)%'
+
+
+    _instanceof:
+        App\Application\UseCase\CommandHandler:
+            tags: [ { name: messenger.message_handler, bus: messenger.bus.command } ]
+
+
+    App\Infrastructure\Bus\CommandBus:
+        arguments:
+            - '@messenger.bus.command'
+

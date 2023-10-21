@@ -1,12 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
-namespace App\Application\UseCase\Request;
+namespace App\Application\UseCase\Command;
 
 use App\Domain\Entity\Message\Update;
+use App\Infrastructure\Bus\Command;
 
-final class StartRequest
+class StartCommand implements Command
 {
     public Update $update;
 
