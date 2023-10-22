@@ -10,9 +10,12 @@ interface TelegramClientInterface
 
     public function sendMessage(int $chatId, string $text);
 
+    public function deleteMessage(int $chatId, int $messageId);
+    public function setMyCommands();
+
     public function sendMessageKeyboard(int $chatId, string $text, array $keyboard);
 
     public function sendMessageInlineKeyboard(int $chatId, string $text, array $keyboard);
 
-    public function sendPhoto(int $chatId, string $photo, string $caption);
+    public function sendPhoto(int $chatId, string $photo, string $caption, array $keyboard);
 }

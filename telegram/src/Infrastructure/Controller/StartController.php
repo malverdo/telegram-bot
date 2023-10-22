@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
+use Throwable;
 
 
 class StartController extends AbstractController
@@ -30,6 +31,7 @@ class StartController extends AbstractController
     }
 
     /**
+     * @throws Throwable
      */
     #[Route('/start', name: 'create', methods: ['POST'])]
     public function create(StartRequest $request): Response

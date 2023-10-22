@@ -2,6 +2,8 @@
 
 namespace App\Infrastructure\Client;
 
+use App\Application\UseCase\Command\QuizMathsCommand;
+use App\Application\UseCase\Command\StartCommand;
 use App\Domain\TelegramClient\TelegramClientInterface;
 use TelegramBot\Entities\Response;
 use TelegramBot\Request;
@@ -38,6 +40,34 @@ class TelegramBotClient implements TelegramClientInterface
         ]);
     }
 
+    public function setMyCommands(): Response
+    {
+        $commands = [
+            [
+                "command" => substr(StartCommand::START,1),
+                "description" => "Запуск бота"
+            ],
+            [
+                "command" => substr(QuizMathsCommand::QUIZ,1),
+                "description" => "Викторина по математике"
+            ],
+        ];
+
+        $data = [
+            'commands' => $commands
+        ];
+
+        return Request::setMyCommands($data);
+    }
+
+    public function deleteMessage(int $chatId, int $messageId): Response
+    {
+        return Request::deleteMessage([
+            'chat_id' => $chatId,
+            'message_id' => $messageId,
+        ]);
+    }
+
     public function sendMessage(int $chatId, string $text): Response
     {
         return Request::sendMessage([
@@ -60,15 +90,10 @@ class TelegramBotClient implements TelegramClientInterface
      */
     public function sendMessageKeyboard(int $chatId, string $text,array $keyboard): Response
     {
-        $keyboard = [
-            'keyboard' => $keyboard,
-            'resize_keyboard' => true
-        ];
-
         return Request::sendMessage([
             'chat_id' => $chatId,
             'text' => $text,
-            'reply_markup' => json_encode($keyboard)
+            'reply_markup' => $this->buildKeyboard($keyboard)
         ]);
     }
 
@@ -97,7 +122,6 @@ class TelegramBotClient implements TelegramClientInterface
         array $keyboard
     ): Response {
 
-
         return Request::sendMessage([
             'chat_id' => $chatId,
             'text' => $text,
@@ -112,6 +136,7 @@ class TelegramBotClient implements TelegramClientInterface
      * @param int $chatId
      * @param string $photo
      * @param string $caption
+     * @param array $keyboard
      * @return Response
      *
      *  $this->kernel->getProjectDir() . '/welcome.jpg'
@@ -119,14 +144,32 @@ class TelegramBotClient implements TelegramClientInterface
     public function sendPhoto(
         int $chatId,
         string $photo,
-        string $caption
+        string $caption,
+        array $keyboard = []
     ): Response {
 
-
-        return Request::sendPhoto([
+        $request = [
             'chat_id' => $chatId,
             'photo' => $photo,
-            'caption' => $caption
-        ]);
+            'caption' => $caption,
+            'reply_markup' => ''
+        ];
+
+        if ($keyboard) {
+            $request['reply_markup'] =  $this->buildKeyboard($keyboard);
+        }
+
+        return Request::sendPhoto($request);
+    }
+
+
+    public function buildKeyboard(array $keyboard): bool|string
+    {
+        $keyboard = [
+            'keyboard' => $keyboard,
+            'resize_keyboard' => true
+        ];
+
+        return json_encode($keyboard);
     }
 }

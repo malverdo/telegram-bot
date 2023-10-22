@@ -21,6 +21,7 @@ services:
             - '../src/Kernel.php'
 
     App\Application\Command\TelegramStart: ~
+    App\Application\Command\TelegramSetCommand: ~
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 #    Symfony\Component\Serializer\Normalizer\ArrayDenormalizer:
@@ -36,6 +37,7 @@ services:
             $botToken: '%env(BOT_TOKEN)%'
             $webhook: '%env(WEB_HOOK)%'
 
+    Predis\Client: '@snc_redis.default'
 
     _instanceof:
         App\Application\UseCase\CommandHandler:

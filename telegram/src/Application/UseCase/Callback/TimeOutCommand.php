@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Application\UseCase\Command;
+namespace App\Application\UseCase\Callback;
 
 use App\Domain\Entity\Message\Update;
 use App\Infrastructure\Bus\Command;
 
-class StartCommand implements Command
+class TimeOutCommand implements Command
 {
-    const START = '/start';
-
     public Update $update;
 
     public function __construct(Update $update)

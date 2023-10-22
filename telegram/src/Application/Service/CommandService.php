@@ -2,6 +2,8 @@
 
 namespace App\Application\Service;
 
+use App\Application\UseCase\Command\NotFoundCommand;
+use App\Application\UseCase\Command\QuizMathsCommand;
 use App\Application\UseCase\Command\StartCommand;
 use App\Domain\Entity\Message\Update;
 use App\Infrastructure\Bus\CommandBus;
@@ -21,19 +23,17 @@ class CommandService
     /**
      * @throws Throwable
      */
-    public function handlerSelection(Update $update)
+    public function handlerSelection(Update $update): void
     {
         $message = $update->getMessage();
         $commandText = $message->getText();
 
-        if ($commandText == '/start') {
-            $this->commandBus->handle(new StartCommand($update));
-        } else {
+        $command = match ($commandText) {
+            StartCommand::START => new StartCommand($update),
+            QuizMathsCommand::QUIZ => new QuizMathsCommand($update),
+            default => new NotFoundCommand($update),
+        };
 
-        }
-        dd($message, 'sdf');
-
-
-
+        $this->commandBus->handle($command);
     }
 }

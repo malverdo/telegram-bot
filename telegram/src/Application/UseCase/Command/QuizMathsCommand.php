@@ -5,9 +5,9 @@ namespace App\Application\UseCase\Command;
 use App\Domain\Entity\Message\Update;
 use App\Infrastructure\Bus\Command;
 
-class StartCommand implements Command
+class QuizMathsCommand implements Command
 {
-    const START = '/start';
+    const QUIZ = '/quizmaths';
 
     public Update $update;
 
