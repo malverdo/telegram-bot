@@ -12,19 +12,19 @@ class Chat
     #[SerializedName("first_name")]
     private string $firstName;
 
-    #[SerializedName("username")]
-    private string $username;
-
     #[SerializedName("type")]
     private string $type;
+
+    #[SerializedName("username")]
+    private string $username;
 
     /**
      * @param int $id
      * @param string $firstName
-     * @param string $username
      * @param string $type
+     * @param string $username
      */
-    public function __construct(int $id, string $firstName, string $username, string $type)
+    public function __construct(int $id, string $firstName, string $type, string $username = '')
     {
         $this->id = $id;
         $this->firstName = $firstName;
