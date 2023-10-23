@@ -29,7 +29,7 @@ class TelegramBotClient implements TelegramClientInterface
     public function setWebhook(): void
     {
          Request::setWebhook([
-                'url' => 'https://webhook.site/58cac3dc-01a3-4ad1-8c95-687ada877dd1/'
+                'url' =>  $this->webhook
          ]);
     }
 

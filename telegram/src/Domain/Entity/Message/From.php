@@ -28,7 +28,7 @@ class From
      * @param string $username
      * @param string $languageCode
      */
-    public function __construct(int $id, bool $isBot, string $firstName , string $username , string $languageCode = '')
+    public function __construct(int $id, bool $isBot, string $firstName , string $username = '' , string $languageCode = '')
     {
         $this->id = $id;
         $this->isBot = $isBot;
