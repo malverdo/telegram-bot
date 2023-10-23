@@ -10,8 +10,11 @@ services:
     volumes:
       - ./deployment/docker/${APP}/conf/${PROJECT}.conf:/etc/nginx/conf.d/${PROJECT}.conf
       - ./${PROJECT}:/var/www/html
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/lib/letsencrypt:/var/lib/letsencrypt:ro
     depends_on:
       - telegram
+
   telegram:
     container_name: php
     build:
