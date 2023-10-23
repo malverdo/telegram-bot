@@ -49,8 +49,9 @@ class QuizMathsCommandHandler implements CommandHandler
         if ($values) {
             $array = json_decode($values, true);
             $data = $update->getCallbackQuery()->getData();
-            $isAnswer = $array['value'] == $data;
-            $this->answer($chat, $isAnswer, $data);
+            $correct = $array['value'];
+            $isAnswer = $correct == $data;
+            $this->answer($chat, $isAnswer, $correct);
             $this->pclient->delete($redisKey);
         } else {
             $this->oneCommand($chat);
