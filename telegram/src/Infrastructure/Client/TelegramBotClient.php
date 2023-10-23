@@ -29,14 +29,14 @@ class TelegramBotClient implements TelegramClientInterface
     public function setWebhook(): void
     {
          Request::setWebhook([
-                'url' => $this->webhook . $this->botToken
+                'url' => $this->webhook
          ]);
     }
 
     public function deleteWebhook(): void
     {
         Request::deleteWebhook([
-            'url' => $this->webhook . $this->botToken
+            'url' => $this->webhook
         ]);
     }
 
